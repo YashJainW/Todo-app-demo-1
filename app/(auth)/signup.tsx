@@ -13,6 +13,7 @@ import {
 import { Link, router } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import i18n from "../../constants/i18n";
+import { fonts } from "../../lib/fonts";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -172,11 +173,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#2c3e50",
     marginBottom: 8,
+    fontFamily: fonts.quicksand.bold,
   },
   subtitle: {
     fontSize: 16,
     color: "#7f8c8d",
     textAlign: "center",
+    fontFamily: fonts.quicksand.medium,
   },
   form: {
     backgroundColor: "white",
@@ -199,6 +202,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#2c3e50",
     marginBottom: 8,
+    fontFamily: fonts.quicksand.semiBold,
   },
   input: {
     borderWidth: 1,
@@ -207,6 +211,7 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     backgroundColor: "#f8f9fa",
+    fontFamily: fonts.quicksand.regular,
   },
   button: {
     backgroundColor: "#27ae60",
@@ -222,6 +227,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   footer: {
     marginTop: 24,
@@ -230,9 +236,11 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: "#7f8c8d",
+    fontFamily: fonts.quicksand.regular,
   },
   link: {
     color: "#27ae60",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
 });

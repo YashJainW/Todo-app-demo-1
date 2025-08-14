@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useAuth } from "../hooks/useAuth";
 import { supabase } from "../lib/supabase";
+import { fonts } from "../lib/fonts";
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
@@ -285,6 +286,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.bold,
   },
   title: {
     fontSize: 18,
@@ -292,6 +294,7 @@ const styles = StyleSheet.create({
     color: "#2c3e50",
     marginBottom: 12,
     paddingHorizontal: 4,
+    fontFamily: fonts.quicksand.semiBold,
   },
   card: {
     backgroundColor: "white",
@@ -316,6 +319,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#7f8c8d",
     marginBottom: 6,
+    fontFamily: fonts.quicksand.medium,
   },
   input: {
     borderWidth: 1,
@@ -324,6 +328,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: "#ffffff",
+    fontFamily: fonts.quicksand.regular,
   },
   readonly: {
     backgroundColor: "#f6f7f9",
@@ -343,6 +348,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   actionsRow: {
     flexDirection: "row",
@@ -360,6 +366,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: "#2c3e50",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   deleteButton: {
     backgroundColor: "#e74c3c",
@@ -370,5 +377,6 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: "white",
     fontWeight: "700",
+    fontFamily: fonts.quicksand.bold,
   },
 });

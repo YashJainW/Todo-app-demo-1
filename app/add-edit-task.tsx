@@ -18,6 +18,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { useAuth } from "../hooks/useAuth";
 import { supabase, Task } from "../lib/supabase";
 import i18n from "../constants/i18n";
+import { fonts } from "../lib/fonts";
 
 interface TaskFormData {
   name: string;
@@ -917,6 +918,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.semiBold,
   },
   saveButton: {
     backgroundColor: "#3498db",
@@ -927,6 +929,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: "white",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   content: {
     flex: 1,
@@ -942,6 +945,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#2c3e50",
     marginBottom: 8,
+    fontFamily: fonts.quicksand.semiBold,
   },
   input: {
     borderWidth: 1,
@@ -950,6 +954,7 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     backgroundColor: "white",
+    fontFamily: fonts.quicksand.regular,
   },
   textArea: {
     height: 80,
@@ -975,9 +980,11 @@ const styles = StyleSheet.create({
   typeButtonText: {
     color: "#7f8c8d",
     fontWeight: "500",
+    fontFamily: fonts.quicksand.medium,
   },
   typeButtonTextActive: {
     color: "white",
+    fontFamily: fonts.quicksand.medium,
   },
   priorityButtons: {
     flexDirection: "row",
@@ -1001,14 +1008,17 @@ const styles = StyleSheet.create({
   priorityButtonText: {
     color: "#7f8c8d",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   priorityButtonTextActive: {
     color: "white",
+    fontFamily: fonts.quicksand.semiBold,
   },
   priorityLabel: {
     fontSize: 14,
     color: "#7f8c8d",
     textAlign: "center",
+    fontFamily: fonts.quicksand.medium,
   },
   dateInput: {
     flexDirection: "row",
@@ -1023,6 +1033,7 @@ const styles = StyleSheet.create({
   dateInputText: {
     fontSize: 16,
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.medium,
   },
   weekInputs: {
     gap: 12,
@@ -1043,6 +1054,7 @@ const styles = StyleSheet.create({
   parentInputText: {
     fontSize: 16,
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.medium,
   },
   addAttachmentButton: {
     flexDirection: "row",
@@ -1060,6 +1072,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     marginLeft: 8,
+    fontFamily: fonts.quicksand.medium,
   },
   attachmentItem: {
     flexDirection: "row",
@@ -1076,6 +1089,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#2c3e50",
     flex: 1,
+    fontFamily: fonts.quicksand.regular,
   },
   modalOverlay: {
     flex: 1,
@@ -1100,6 +1114,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.semiBold,
   },
   modalBody: {
     padding: 20,
@@ -1112,10 +1127,12 @@ const styles = StyleSheet.create({
   parentOptionText: {
     fontSize: 16,
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.medium,
   },
   weekDateStrong: {
     fontSize: 16,
     color: "#2c3e50",
     fontWeight: "700",
+    fontFamily: fonts.quicksand.bold,
   },
 });

@@ -19,6 +19,7 @@ import {
 } from "../../lib/taskActions";
 import { toggleTaskAndSync } from "../../lib/taskActions";
 import i18n from "../../constants/i18n";
+import { fonts } from "../../lib/fonts";
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -510,13 +511,15 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: "600",
     color: "#2c3e50",
     marginBottom: 4,
+    fontFamily: fonts.quicksand.semiBold,
   },
   dateText: {
     fontSize: 16,
     color: "#7f8c8d",
+    fontFamily: fonts.quicksand.medium,
   },
   addButton: {
     backgroundColor: "#3498db",
@@ -541,6 +544,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
+    fontFamily: fonts.quicksand.semiBold,
   },
   clearAllButton: {
     backgroundColor: "#e74c3c",
@@ -557,6 +561,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     marginLeft: 8,
+    fontFamily: fonts.quicksand.bold,
   },
   section: {
     backgroundColor: "white",
@@ -578,6 +583,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#2c3e50",
     marginBottom: 12,
+    fontFamily: fonts.quicksand.semiBold,
   },
   taskItem: {
     flexDirection: "row",
@@ -614,6 +620,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2c3e50",
     fontWeight: "500",
+    fontFamily: fonts.quicksand.medium,
   },
   completedTaskText: {
     textDecorationLine: "line-through",
@@ -623,6 +630,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#7f8c8d",
     marginTop: 2,
+    fontFamily: fonts.quicksand.regular,
   },
   priorityBadge: {
     width: 24,
@@ -649,12 +657,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.bold,
   },
   emptyText: {
     textAlign: "center",
     color: "#7f8c8d",
     fontStyle: "italic",
     paddingVertical: 20,
+    fontFamily: fonts.quicksand.regular,
   },
   modalOverlay: {
     flex: 1,
@@ -672,11 +682,13 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#2c3e50",
     marginBottom: 8,
+    fontFamily: fonts.quicksand.bold,
   },
   modalBodyText: {
     fontSize: 14,
     color: "#7f8c8d",
     marginBottom: 12,
+    fontFamily: fonts.quicksand.medium,
   },
   modalActions: {
     gap: 8,
@@ -693,6 +705,7 @@ const styles = StyleSheet.create({
   modalButtonSecondaryText: {
     color: "#2c3e50",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   modalButtonPrimary: {
     backgroundColor: "#3498db",
@@ -700,6 +713,7 @@ const styles = StyleSheet.create({
   modalButtonPrimaryText: {
     color: "white",
     fontWeight: "700",
+    fontFamily: fonts.quicksand.bold,
   },
   modalButtonDanger: {
     backgroundColor: "#e74c3c",
@@ -707,11 +721,13 @@ const styles = StyleSheet.create({
   modalButtonDangerText: {
     color: "white",
     fontWeight: "700",
+    fontFamily: fonts.quicksand.bold,
   },
   modalHint: {
     fontSize: 12,
     color: "#7f8c8d",
     marginTop: 8,
+    fontFamily: fonts.quicksand.regular,
   },
   upcomingCard: {
     backgroundColor: "white",
@@ -720,7 +736,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
@@ -746,8 +765,10 @@ const styles = StyleSheet.create({
   upcomingTabText: {
     color: "#7f8c8d",
     fontWeight: "600",
+    fontFamily: fonts.quicksand.semiBold,
   },
   upcomingTabTextActive: {
     color: "#fff",
+    fontFamily: fonts.quicksand.semiBold,
   },
 });

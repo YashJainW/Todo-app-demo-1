@@ -18,6 +18,7 @@ import {
 } from "../../lib/taskActions";
 import { toggleTaskAndSync } from "../../lib/taskActions";
 import i18n from "../../constants/i18n";
+import { fonts } from "../../lib/fonts";
 
 export default function DailyScreen() {
   const { user } = useAuth();
@@ -47,7 +48,9 @@ export default function DailyScreen() {
       setLoading(true);
       const dateStr = selectedDate.toISOString().split("T")[0];
 
-      const { data, error } = await supabase
+      const sb = supabase;
+      if (!sb) return;
+      const { data, error } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -316,10 +319,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#2c3e50",
     marginBottom: 2,
+    fontFamily: fonts.quicksand.bold,
   },
   fullDateText: {
     fontSize: 14,
     color: "#7f8c8d",
+    fontFamily: fonts.quicksand.medium,
   },
   addButton: {
     backgroundColor: "#3498db",
@@ -344,6 +349,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
+    fontFamily: fonts.quicksand.semiBold,
   },
   tasksContainer: {
     backgroundColor: "white",
@@ -365,6 +371,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#2c3e50",
     marginBottom: 16,
+    fontFamily: fonts.quicksand.semiBold,
   },
   taskItem: {
     flexDirection: "row",
@@ -401,6 +408,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2c3e50",
     fontWeight: "500",
+    fontFamily: fonts.quicksand.medium,
   },
   completedTaskText: {
     textDecorationLine: "line-through",
@@ -410,6 +418,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#7f8c8d",
     marginTop: 4,
+    fontFamily: fonts.quicksand.regular,
   },
   priorityBadge: {
     width: 24,
@@ -423,6 +432,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     padding: 6,
   },
+  deleteButton: {
+    marginLeft: 4,
+    padding: 6,
+  },
   priority1: { backgroundColor: "#e8f5e8" },
   priority2: { backgroundColor: "#fff3cd" },
   priority3: { backgroundColor: "#ffeaa7" },
@@ -432,6 +445,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#2c3e50",
+    fontFamily: fonts.quicksand.bold,
   },
   emptyContainer: {
     alignItems: "center",
@@ -442,11 +456,13 @@ const styles = StyleSheet.create({
     color: "#7f8c8d",
     marginTop: 16,
     fontWeight: "500",
+    fontFamily: fonts.quicksand.medium,
   },
   emptySubtext: {
     fontSize: 14,
     color: "#bdc3c7",
     marginTop: 8,
     textAlign: "center",
+    fontFamily: fonts.quicksand.regular,
   },
 });
