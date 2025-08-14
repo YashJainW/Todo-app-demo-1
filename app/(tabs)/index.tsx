@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Alert,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
@@ -20,6 +21,7 @@ import {
 import { toggleTaskAndSync } from "../../lib/taskActions";
 import i18n from "../../constants/i18n";
 import { fonts } from "../../lib/fonts";
+import LoadingOverlay from "../../components/LoadingOverlay";
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -35,6 +37,8 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -58,8 +62,9 @@ export default function HomeScreen() {
       const today = new Date().toISOString().split("T")[0];
 
       // Fetch today's tasks
-      if (!supabase) return;
-      const { data: todayData } = await supabase
+      const sb = supabase;
+      if (!sb) return;
+      const { data: todayData } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -71,7 +76,7 @@ export default function HomeScreen() {
       const nextDay = new Date();
       nextDay.setDate(nextDay.getDate() + 1);
       const nextDayStr = nextDay.toISOString().split("T")[0];
-      const { data: upcomingDaily } = await supabase
+      const { data: upcomingDaily } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -112,7 +117,7 @@ export default function HomeScreen() {
       const currMonStr = fmt(currMon);
       const currSunStr = fmt(currSun);
       // Fetch both current and next week weekly tasks
-      const { data: upcomingWeeklyCurr } = await supabase
+      const { data: upcomingWeeklyCurr } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -120,7 +125,7 @@ export default function HomeScreen() {
         .eq("timeframe->>startDate", currMonStr)
         .eq("timeframe->>endDate", currSunStr)
         .order("priority", { ascending: false });
-      const { data: upcomingWeeklyNext } = await supabase
+      const { data: upcomingWeeklyNext } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -141,7 +146,7 @@ export default function HomeScreen() {
       const currMonthDate = new Date();
       const currMonth = currMonthDate.getMonth() + 1;
       const currYear = currMonthDate.getFullYear();
-      const { data: upcomingMonthlyCurr } = await supabase
+      const { data: upcomingMonthlyCurr } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -149,7 +154,7 @@ export default function HomeScreen() {
         .eq("timeframe->>month", currMonth)
         .eq("timeframe->>year", currYear)
         .order("priority", { ascending: false });
-      const { data: upcomingMonthlyNext } = await supabase
+      const { data: upcomingMonthlyNext } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -163,7 +168,7 @@ export default function HomeScreen() {
       ].filter((t, idx, arr) => arr.findIndex((x) => x.id === t.id) === idx);
 
       // Fetch overdue tasks
-      const { data: overdueData } = await supabase
+      const { data: overdueData } = await sb
         .from("tasks")
         .select("*")
         .eq("user_id", user.id)
@@ -201,12 +206,17 @@ export default function HomeScreen() {
           style: "destructive",
           onPress: async () => {
             try {
+              setActionLoading(true);
+              setLoadingMessage("Clearing all tasks...");
               const sb = supabase;
               if (!sb) return;
               await sb.from("tasks").delete().eq("user_id", user.id);
               await fetchTasks();
             } catch (e) {
               console.error("Error clearing tasks:", e);
+            } finally {
+              setActionLoading(false);
+              setLoadingMessage("");
             }
           },
         },
@@ -216,11 +226,16 @@ export default function HomeScreen() {
 
   const toggleTaskCompletion = async (task: Task) => {
     try {
+      setActionLoading(true);
+      setLoadingMessage("Updating task...");
       const newStatus = !task.is_completed;
       await toggleTaskAndSync(task, newStatus);
       await fetchTasks();
     } catch (error) {
       console.error("Error updating task:", error);
+    } finally {
+      setActionLoading(false);
+      setLoadingMessage("");
     }
   };
 
@@ -292,22 +307,23 @@ export default function HomeScreen() {
     showDate = false
   ) => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <Text
+        style={[styles.sectionTitle, loading && styles.sectionTitleDisabled]}
+      >
+        {title}
+      </Text>
       {tasks.length > 0 ? (
         tasks.map((task) => renderTaskItem(task, showDate))
+      ) : loading ? (
+        <View style={styles.emptyLoadingContainer}>
+          <ActivityIndicator size="small" color="#bdc3c7" />
+          <Text style={styles.emptyLoadingText}>Loading tasks...</Text>
+        </View>
       ) : (
         <Text style={styles.emptyText}>{emptyMessage}</Text>
       )}
     </View>
   );
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
 
   return (
     <>
@@ -347,25 +363,76 @@ export default function HomeScreen() {
         </View>
 
         <TouchableOpacity
-          style={styles.addButton}
+          style={[styles.addButton, loading && styles.addButtonDisabled]}
           onPress={() => router.push("/add-edit-task")}
+          disabled={loading}
         >
-          <Ionicons name="add" size={24} color="white" />
-          <Text style={styles.addButtonText}>{i18n.t("tasks.addTask")}</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <Ionicons name="add" size={24} color="white" />
+          )}
+          <Text style={styles.addButtonText}>
+            {loading ? "Loading..." : i18n.t("tasks.addTask")}
+          </Text>
         </TouchableOpacity>
 
-        {renderSection(
-          i18n.t("home.today"),
-          todayTasks,
-          i18n.t("tasks.noTasks"),
-          false
+        {loading ? (
+          <View style={styles.section}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                loading && styles.sectionTitleDisabled,
+              ]}
+            >
+              {i18n.t("home.today")}
+            </Text>
+            <View style={styles.emptyLoadingContainer}>
+              <ActivityIndicator size="small" color="#bdc3c7" />
+              <Text style={styles.emptyLoadingText}>
+                Loading today's tasks...
+              </Text>
+            </View>
+          </View>
+        ) : (
+          renderSection(
+            i18n.t("home.today"),
+            todayTasks,
+            i18n.t("tasks.noTasks"),
+            false
+          )
         )}
 
-        {overdueTasks.length > 0 &&
-          renderSection(i18n.t("home.overdue"), overdueTasks, "", true)}
+        {overdueTasks.length > 0 ? (
+          renderSection(i18n.t("home.overdue"), overdueTasks, "", true)
+        ) : loading ? (
+          <View style={styles.section}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                loading && styles.sectionTitleDisabled,
+              ]}
+            >
+              {i18n.t("home.overdue")}
+            </Text>
+            <View style={styles.emptyLoadingContainer}>
+              <ActivityIndicator size="small" color="#bdc3c7" />
+              <Text style={styles.emptyLoadingText}>
+                Checking for overdue tasks...
+              </Text>
+            </View>
+          </View>
+        ) : null}
 
         <View style={styles.upcomingCard}>
-          <Text style={styles.sectionTitle}>{i18n.t("home.upcoming")}</Text>
+          <Text
+            style={[
+              styles.sectionTitle,
+              loading && styles.sectionTitleDisabled,
+            ]}
+          >
+            {i18n.t("home.upcoming")}
+          </Text>
           <View style={styles.upcomingTabs}>
             {(["Daily", "Weekly", "Monthly"] as const).map((tab) => (
               <TouchableOpacity
@@ -373,13 +440,16 @@ export default function HomeScreen() {
                 style={[
                   styles.upcomingTab,
                   upcomingTab === tab && styles.upcomingTabActive,
+                  loading && styles.upcomingTabDisabled,
                 ]}
                 onPress={() => setUpcomingTab(tab)}
+                disabled={loading}
               >
                 <Text
                   style={[
                     styles.upcomingTabText,
                     upcomingTab === tab && styles.upcomingTabTextActive,
+                    loading && styles.upcomingTabTextDisabled,
                   ]}
                 >
                   {tab}
@@ -388,33 +458,68 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          {upcomingTab === "Daily" &&
-            (upcomingDailyTasks.length > 0 ? (
-              upcomingDailyTasks.map((t) => renderTaskItem(t, true))
-            ) : (
-              <Text style={styles.emptyText}>{i18n.t("tasks.noTasks")}</Text>
-            ))}
-          {upcomingTab === "Weekly" &&
-            (upcomingWeeklyTasks.length > 0 ? (
-              upcomingWeeklyTasks.map((t) => renderTaskItem(t, true))
-            ) : (
-              <Text style={styles.emptyText}>{i18n.t("tasks.noTasks")}</Text>
-            ))}
-          {upcomingTab === "Monthly" &&
-            (upcomingMonthlyTasks.length > 0 ? (
-              upcomingMonthlyTasks.map((t) => renderTaskItem(t, true))
-            ) : (
-              <Text style={styles.emptyText}>{i18n.t("tasks.noTasks")}</Text>
-            ))}
+          {loading ? (
+            <View style={styles.emptyLoadingContainer}>
+              <ActivityIndicator size="small" color="#bdc3c7" />
+              <Text style={styles.emptyLoadingText}>
+                Loading upcoming tasks...
+              </Text>
+            </View>
+          ) : (
+            <>
+              {upcomingTab === "Daily" &&
+                (upcomingDailyTasks.length > 0 ? (
+                  upcomingDailyTasks.map((t) => renderTaskItem(t, true))
+                ) : (
+                  <Text style={styles.emptyText}>
+                    {i18n.t("tasks.noTasks")}
+                  </Text>
+                ))}
+              {upcomingTab === "Weekly" &&
+                (upcomingWeeklyTasks.length > 0 ? (
+                  upcomingWeeklyTasks.map((t) => renderTaskItem(t, true))
+                ) : (
+                  <Text style={styles.emptyText}>
+                    {i18n.t("tasks.noTasks")}
+                  </Text>
+                ))}
+              {upcomingTab === "Monthly" &&
+                (upcomingMonthlyTasks.length > 0 ? (
+                  upcomingMonthlyTasks.map((t) => renderTaskItem(t, true))
+                ) : (
+                  <Text style={styles.emptyText}>
+                    {i18n.t("tasks.noTasks")}
+                  </Text>
+                ))}
+            </>
+          )}
         </View>
         <TouchableOpacity
-          style={styles.clearAllButton}
+          style={[
+            styles.clearAllButton,
+            loading && styles.clearAllButtonDisabled,
+          ]}
           onPress={handleClearAllTasks}
+          disabled={loading}
         >
-          <Ionicons name="trash" size={20} color="#fff" />
-          <Text style={styles.clearAllButtonText}>Clear All Tasks</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Ionicons name="trash" size={20} color="#fff" />
+          )}
+          <Text style={styles.clearAllButtonText}>
+            {loading ? "Loading..." : "Clear All Tasks"}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Loading Overlay for Actions */}
+      <LoadingOverlay
+        visible={actionLoading}
+        message={loadingMessage}
+        size="large"
+      />
+
       {/* Delete/Reparent Modal */}
       <Modal
         visible={showDeleteModal}
@@ -440,11 +545,15 @@ export default function HomeScreen() {
                 onPress={async () => {
                   if (!taskToDelete) return;
                   try {
+                    setActionLoading(true);
+                    setLoadingMessage("Deleting task...");
                     await deleteTaskKeepChildrenOrReparent(taskToDelete.id);
                     await fetchTasks();
                   } catch (e) {
                     console.error("Error deleting task:", e);
                   } finally {
+                    setActionLoading(false);
+                    setLoadingMessage("");
                     setShowDeleteModal(false);
                     setTaskToDelete(null);
                   }
@@ -459,11 +568,15 @@ export default function HomeScreen() {
                 onPress={async () => {
                   if (!taskToDelete) return;
                   try {
+                    setActionLoading(true);
+                    setLoadingMessage("Deleting task and children...");
                     await deleteTaskTree(taskToDelete.id);
                     await fetchTasks();
                   } catch (e) {
                     console.error("Error deleting task:", e);
                   } finally {
+                    setActionLoading(false);
+                    setLoadingMessage("");
                     setShowDeleteModal(false);
                     setTaskToDelete(null);
                   }
@@ -490,11 +603,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f9fa",
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+
   header: {
     backgroundColor: "white",
     padding: 20,
@@ -516,10 +625,24 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontFamily: fonts.quicksand.semiBold,
   },
+  welcomeTextDisabled: {
+    opacity: 0.7,
+  },
   dateText: {
     fontSize: 16,
     color: "#7f8c8d",
     fontFamily: fonts.quicksand.medium,
+  },
+  dateTextDisabled: {
+    opacity: 0.7,
+  },
+  dateRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  headerLoadingIndicator: {
+    marginLeft: 10,
   },
   addButton: {
     backgroundColor: "#3498db",
@@ -539,6 +662,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  addButtonDisabled: {
+    opacity: 0.7,
+  },
   addButtonText: {
     color: "white",
     fontSize: 16,
@@ -555,6 +681,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 16,
     borderRadius: 12,
+  },
+  clearAllButtonDisabled: {
+    opacity: 0.7,
   },
   clearAllButtonText: {
     color: "white",
@@ -584,6 +713,9 @@ const styles = StyleSheet.create({
     color: "#2c3e50",
     marginBottom: 12,
     fontFamily: fonts.quicksand.semiBold,
+  },
+  sectionTitleDisabled: {
+    opacity: 0.7,
   },
   taskItem: {
     flexDirection: "row",
@@ -762,6 +894,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#3498db",
     borderColor: "#3498db",
   },
+  upcomingTabDisabled: {
+    opacity: 0.7,
+  },
   upcomingTabText: {
     color: "#7f8c8d",
     fontWeight: "600",
@@ -770,5 +905,21 @@ const styles = StyleSheet.create({
   upcomingTabTextActive: {
     color: "#fff",
     fontFamily: fonts.quicksand.semiBold,
+  },
+  upcomingTabTextDisabled: {
+    color: "#bdc3c7",
+    fontFamily: fonts.quicksand.regular,
+  },
+  emptyLoadingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+  },
+  emptyLoadingText: {
+    marginLeft: 10,
+    fontSize: 14,
+    color: "#7f8c8d",
+    fontFamily: fonts.quicksand.regular,
   },
 });
