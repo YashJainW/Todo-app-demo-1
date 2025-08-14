@@ -1,0 +1,73 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "signInTitle": "Bienvenido de Vuelta",
+    "signUpTitle": "Crear Cuenta"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "daily": "Diario",
+    "weekly": "Semanal",
+    "monthly": "Mensual",
+    "yearly": "Anual"
+  },
+  "tasks": {
+    "addTask": "Agregar Tarea",
+    "editTask": "Editar Tarea",
+    "taskName": "Nombre de Tarea",
+    "description": "Descripción",
+    "priority": "Prioridad",
+    "priority1": "Muy Baja",
+    "priority2": "Baja",
+    "priority3": "Media",
+    "priority4": "Alta",
+    "priority5": "Muy Alta",
+    "type": "Tipo",
+    "daily": "Diario",
+    "weekly": "Semanal",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "parentTask": "Tarea Padre",
+    "attachments": "Archivos Adjuntos",
+    "addAttachment": "Agregar Archivo",
+    "reminder": "Recordatorio",
+    "noTasks": "Aún no hay tareas",
+    "completed": "Completado",
+    "incomplete": "Incompleto"
+  },
+  "home": {
+    "today": "Hoy",
+    "upcoming": "Próximas",
+    "overdue": "Atrasadas",
+    "completedToday": "Completadas Hoy"
+  },
+  "calendar": {
+    "selectDate": "Seleccionar Fecha",
+    "selectWeek": "Seleccionar Semana",
+    "selectMonth": "Seleccionar Mes",
+    "selectYear": "Seleccionar Año"
+  },
+  "notifications": {
+    "permissionRequired": "Se requiere permiso de notificación para establecer recordatorios",
+    "reminderSet": "Recordatorio establecido exitosamente",
+    "reminderRemoved": "Recordatorio eliminado"
+  }
+}

@@ -1,0 +1,238 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import { Link, router } from "expo-router";
+import { useAuth } from "../../hooks/useAuth";
+import i18n from "../../constants/i18n";
+
+export default function SignupScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signUp } = useAuth();
+
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword || !firstName) {
+      Alert.alert(i18n.t("common.error"), "Please fill in all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert(i18n.t("common.error"), "Passwords do not match");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert(
+        i18n.t("common.error"),
+        "Password must be at least 6 characters"
+      );
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await signUp(email, password, firstName.trim());
+      if (error) {
+        Alert.alert(
+          i18n.t("common.error"),
+          (error as any).message || "An error occurred"
+        );
+      } else {
+        Alert.alert(
+          i18n.t("common.success"),
+          "Account created successfully! Please check your email to verify your account.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.replace("/(auth)/login"),
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      Alert.alert(i18n.t("common.error"), "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{i18n.t("auth.signUpTitle")}</Text>
+          <Text style={styles.subtitle}>
+            Create your account to get started
+          </Text>
+        </View>
+
+        <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>First Name</Text>
+            <TextInput
+              style={styles.input}
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholder="Enter your first name"
+              autoCapitalize="words"
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{i18n.t("auth.email")}</Text>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{i18n.t("auth.password")}</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter your password"
+              secureTextEntry
+              autoCapitalize="none"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{i18n.t("auth.confirmPassword")}</Text>
+            <TextInput
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="Confirm your password"
+              secureTextEntry
+              autoCapitalize="none"
+            />
+          </View>
+
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSignUp}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? i18n.t("common.loading") : i18n.t("auth.signUp")}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              {i18n.t("auth.hasAccount")}{" "}
+              <Link href="/(auth)/login" style={styles.link}>
+                {i18n.t("auth.signIn")}
+              </Link>
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#2c3e50",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#7f8c8d",
+    textAlign: "center",
+  },
+  form: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2c3e50",
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#e1e8ed",
+    borderRadius: 8,
+    padding: 16,
+    fontSize: 16,
+    backgroundColor: "#f8f9fa",
+  },
+  button: {
+    backgroundColor: "#27ae60",
+    borderRadius: 8,
+    padding: 16,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  buttonDisabled: {
+    backgroundColor: "#bdc3c7",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  footer: {
+    marginTop: 24,
+    alignItems: "center",
+  },
+  footerText: {
+    fontSize: 14,
+    color: "#7f8c8d",
+  },
+  link: {
+    color: "#27ae60",
+    fontWeight: "600",
+  },
+});

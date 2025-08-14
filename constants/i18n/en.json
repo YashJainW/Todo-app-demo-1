@@ -1,0 +1,73 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signInTitle": "Welcome Back",
+    "signUpTitle": "Create Account"
+  },
+  "navigation": {
+    "home": "Home",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly"
+  },
+  "tasks": {
+    "addTask": "Add Task",
+    "editTask": "Edit Task",
+    "taskName": "Task Name",
+    "description": "Description",
+    "priority": "Priority",
+    "priority1": "Very Low",
+    "priority2": "Low",
+    "priority3": "Medium",
+    "priority4": "High",
+    "priority5": "Very High",
+    "type": "Type",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "parentTask": "Parent Task",
+    "attachments": "Attachments",
+    "addAttachment": "Add Attachment",
+    "reminder": "Reminder",
+    "noTasks": "No tasks yet",
+    "completed": "Completed",
+    "incomplete": "Incomplete"
+  },
+  "home": {
+    "today": "Today",
+    "upcoming": "Upcoming",
+    "overdue": "Overdue",
+    "completedToday": "Completed Today"
+  },
+  "calendar": {
+    "selectDate": "Select Date",
+    "selectWeek": "Select Week",
+    "selectMonth": "Select Month",
+    "selectYear": "Select Year"
+  },
+  "notifications": {
+    "permissionRequired": "Notification permission is required to set reminders",
+    "reminderSet": "Reminder set successfully",
+    "reminderRemoved": "Reminder removed"
+  }
+}
